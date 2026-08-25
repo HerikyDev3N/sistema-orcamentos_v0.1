@@ -1,3 +1,21 @@
+## Screenshots
+
+### Página inicial
+
+![Página inicial](screenshots/home.png)
+
+![Página inicial2](screenshots/home2.png)
+
+![Página inicial3](screenshots/home3.png)
+
+### Solicitação de orçamento
+
+![Solicitação de orçamento](screenshots/solicitar-orcamento.png)
+
+### Painel administrativo
+
+![Painel administrativo](screenshots/painel.png)
+
 # Sistema de Orçamentos e Captação de Clientes
 
 Sistema web full-stack desenvolvido para empresas de instalação e manutenção de ar-condicionado, com foco em captação de clientes, gerenciamento de leads e organização de solicitações de orçamento.
