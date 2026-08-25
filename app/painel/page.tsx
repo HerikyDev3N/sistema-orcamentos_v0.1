@@ -115,9 +115,7 @@ export default function PainelPage() {
     }
   }, []);
 
-  useEffect(() => {
-    void loadLeads();
-  }, [loadLeads]);
+  
 
   const filteredLeads = useMemo(() => {
     const normalizedSearch = search
