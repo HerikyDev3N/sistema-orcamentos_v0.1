@@ -1,0 +1,63 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { leadSchema } from "@/lib/validations";
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+
+    const validation = leadSchema.safeParse(body);
+
+    if (!validation.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Os dados enviados são inválidos.",
+          errors: validation.error.flatten().fieldErrors,
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    const lead = await prisma.lead.create({
+      data: {
+        name: validation.data.name,
+        whatsapp: validation.data.whatsapp,
+        city: validation.data.city,
+        serviceType: validation.data.serviceType,
+        description: validation.data.description,
+      },
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Solicitação de orçamento criada com sucesso.",
+        lead: {
+          id: lead.id,
+          name: lead.name,
+          status: lead.status,
+          createdAt: lead.createdAt,
+        },
+      },
+      {
+        status: 201,
+      },
+    );
+  } catch (error) {
+    console.error("Erro ao criar lead:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          "Não foi possível processar a solicitação. Tente novamente.",
+      },
+      {
+        status: 500,
+      },
+    );
+  }
+}

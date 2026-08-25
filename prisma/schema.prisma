@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Lead {
+  id          Int        @id @default(autoincrement())
+  name        String
+  whatsapp    String
+  city        String
+  serviceType String
+  description String
+  status      LeadStatus @default(NEW)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  photos      LeadPhoto[]
+  quotes      Quote[]
+}
+
+model LeadPhoto {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  path      String
+  createdAt DateTime @default(now())
+
+  leadId    Int
+  lead      Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model Quote {
+  id          Int         @id @default(autoincrement())
+  number      Int         @unique
+
+  status      QuoteStatus @default(DRAFT)
+
+  subtotal    Decimal     @default(0)
+  discount    Decimal     @default(0)
+  total       Decimal     @default(0)
+
+  notes       String?
+  validUntil  DateTime?
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  leadId      Int
+  lead        Lead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  items       QuoteItem[]
+
+  @@index([leadId])
+  @@index([status])
+}
+
+model QuoteItem {
+  id          Int      @id @default(autoincrement())
+  description String
+
+  quantity    Decimal  @default(1)
+  unitPrice   Decimal  @default(0)
+  total       Decimal  @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  quoteId     Int
+  quote       Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@index([quoteId])
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUOTE_SENT
+  CLOSED
+  CANCELLED
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  APPROVED
+  REJECTED
+  EXPIRED
+  CANCELLED
+}
